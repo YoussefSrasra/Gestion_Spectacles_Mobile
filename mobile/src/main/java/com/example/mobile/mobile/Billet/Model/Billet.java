@@ -2,11 +2,11 @@ package com.example.mobile.mobile.Billet.Model;
 
 import java.math.BigDecimal;
 
-import com.example.mobile.mobile.Client.Model.Client;
-import com.example.mobile.mobile.Reservation.Model.Reservation;
-import com.example.mobile.mobile.Spectacle.Model.Spectacle;
+import com.example.mobile.mobile.Representation.Model.Representation;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,19 +27,16 @@ public class Billet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String categorie;
+    @Enumerated(EnumType.STRING)
+    private BilletType categorie;
     private BigDecimal prix;
     private boolean vendu;
 
     @ManyToOne
-    @JoinColumn(name = "spectacle_id")
-    private Spectacle spectacle;
+    @JoinColumn(name = "representation_id")
+    private Representation representation;
 
-    @ManyToOne
-    @JoinColumn(name = "reservation_id")
-    private Reservation reservation;
-
-    @ManyToOne
-    @JoinColumn(name = "client_id")
-    private Client client;
+    public enum BilletType {
+        GOLD, SILVER, BRONZE
+    }
 }

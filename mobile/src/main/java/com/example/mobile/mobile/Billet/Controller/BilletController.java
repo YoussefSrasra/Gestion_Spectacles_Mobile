@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.mobile.mobile.Billet.Model.Billet;
 import com.example.mobile.mobile.Billet.Service.BilletService;
-import com.example.mobile.mobile.Client.Model.Client;
-import com.example.mobile.mobile.Spectacle.Model.Spectacle;
+import com.example.mobile.mobile.Representation.Model.Representation;
 
 @RestController
 @RequestMapping("/api/billets")
@@ -39,20 +38,20 @@ public class BilletController {
         return billetService.getBilletById(id);
     }
 
-    @PostMapping("/acheter/{billetId}")
-    public String acheterBillet(@PathVariable Long billetId, @RequestBody Client client) {
-        return billetService.acheterBillet(billetId, client);
-    }
+    // @PostMapping("/acheter/{billetId}")
+    // public String acheterBillet(@PathVariable Long billetId, @RequestBody Client client) {
+    //     return billetService.acheterBillet(billetId, client);
+    // }
 
     @PostMapping("/bySpectacle")
-    public List<Billet> getBilletsBySpectacle(@RequestBody Spectacle spectacle) {
-        return billetService.getBilletsBySpectacle(spectacle);
+    public List<Billet> getBilletsBySpectacle(@RequestBody Representation Representation) {
+        return billetService.getBilletsByRepresentation(Representation);
     }
 
-    @PostMapping("/byClient")
-    public List<Billet> getBilletsByClient(@RequestBody Client client) {
-        return billetService.getBilletsByClient(client);
-    }
+    // @PostMapping("/byClient")
+    // public List<Billet> getBilletsByClient(@RequestBody Client client) {
+    //     return billetService.getBilletsByClient(client);
+    // }
 
     @DeleteMapping("/supprimer/{id}")
     public String supprimerBillet(@PathVariable Long id) {

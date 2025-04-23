@@ -22,13 +22,27 @@ public class RegisterPage2Activity extends AppCompatActivity {
         editTextPassword = findViewById(R.id.password);
         editTextConfirmPassword = findViewById(R.id.confirmPassword);
         Button buttonSuivant2 = findViewById(R.id.nextButton2);
+        Intent prevIntent = getIntent();
+        String nom = prevIntent.getStringExtra("nom");
+        String prenom = prevIntent.getStringExtra("prenom");
+        String email = prevIntent.getStringExtra("email");
+        String numeroTel = prevIntent.getStringExtra("numeroTel");
+        String dateNaissance = prevIntent.getStringExtra("dateNaissance");
+        String adresse = prevIntent.getStringExtra("adresse");
 
         buttonSuivant2.setOnClickListener(v -> {
-            String pwd = editTextPassword.getText().toString();
+            String password = editTextPassword.getText().toString();
             String confirmPwd = editTextConfirmPassword.getText().toString();
 
-            if (pwd.equals(confirmPwd)) {
+            if (password.equals(confirmPwd)) {
                 Intent intent = new Intent(RegisterPage2Activity.this, RegisterPage3Activity.class);
+                intent.putExtra("nom", nom);
+                intent.putExtra("prenom", prenom);
+                intent.putExtra("email", email);
+                intent.putExtra("numeroTel", numeroTel);
+                intent.putExtra("dateNaissance", dateNaissance);
+                intent.putExtra("adresse", adresse);
+                intent.putExtra("password", password);
                 startActivity(intent);
             } else {
                 Toast.makeText(this, "Les mots de passe ne correspondent pas", Toast.LENGTH_SHORT).show();

@@ -1,9 +1,6 @@
 package com.example.hafleti.Spectacle;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -11,65 +8,40 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.hafleti.Home.ClientHomeActivity;
-import com.example.hafleti.Paiement.PaiementActivity;
-import com.example.hafleti.Profile.ProfileActivity;
+import com.bumptech.glide.Glide;
+import com.example.hafleti.Adapters.RepresentationAdapter;
+import com.example.hafleti.Models.Spectacle;
 import com.example.hafleti.R;
-import com.example.hafleti.Reservation.ReservationsActivity;
-import com.example.hafleti.Rubrique.Rubrique;
-import com.example.hafleti.Rubrique.RubriqueAdapter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SpectacleDetailsActivity extends AppCompatActivity {
-    private RecyclerView recyclerRubriques;
-    private RubriqueAdapter rubriqueAdapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spectacle_details);
 
-        TextView titre = findViewById(R.id.detailTitre);
-        TextView dateLieu = findViewById(R.id.detailDateLieu);
-        TextView description = findViewById(R.id.detailDescription);
-        ImageView image = findViewById(R.id.detailImage);
-        recyclerRubriques = findViewById(R.id.recyclerRubriques);
+        // Récupérer l'ID du spectacle
+        Long spectacleId = getIntent().getLongExtra("spectacle_id", -1);
 
-        int spectacleId = getIntent().getIntExtra("spectacleId", -1);
+        // Trouver le spectacle complet (à adapter avec votre source de données)
+        Spectacle spectacle = findSpectacleById(spectacleId);
 
-        // TODO : fetch spectacle + rubriques depuis ton backend avec l'ID
-        // Remplir les champs
+        // Afficher les infos
+        ImageView imageView = findViewById(R.id.imgSpectacle);
+        TextView titleView = findViewById(R.id.titreSpectacle);
 
-        // recyclerView setup
-        recyclerRubriques.setLayoutManager(new LinearLayoutManager(this));
-        rubriqueAdapter = new RubriqueAdapter(getRubriquesFake()); // à remplacer par data du backend
-        recyclerRubriques.setAdapter(rubriqueAdapter);
+        Glide.with(this).load(spectacle.getImage()).into(imageView);
+        titleView.setText(spectacle.getTitre());
 
-        ImageButton navReservations = findViewById(R.id.navReservations);
-        navReservations.setOnClickListener(v -> {
-            startActivity(new Intent(this, ReservationsActivity.class));
-        });
-        ImageButton navAccueil = findViewById(R.id.navAccueil);
-        navAccueil.setOnClickListener(v -> {
-            startActivity(new Intent(this, ClientHomeActivity.class));
-        });
-        ImageButton navProfil = findViewById(R.id.navProfil);
-        navProfil.setOnClickListener(v -> {
-            startActivity(new Intent(this, ProfileActivity.class));
-        });
-        Button btnReserver = findViewById(R.id.btnReserver);
-        btnReserver.setOnClickListener(v->{
-            startActivity(new Intent (this, PaiementActivity.class));
-        });
+        // Afficher les représentations
+        RecyclerView recyclerRep = findViewById(R.id.recyclerRepresentations);
+        RepresentationAdapter adapter = new RepresentationAdapter(this, spectacle.getRepresentations());
+        recyclerRep.setAdapter(adapter);
+        recyclerRep.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    // Exemples de données factices
-    private List<Rubrique> getRubriquesFake() {
-        List<Rubrique> rubriques = new ArrayList<>();
-        rubriques.add(new Rubrique("Ouverture", "10h00 - 10h30", "MC Ahmed"));
-        rubriques.add(new Rubrique("Danse", "10h30 - 11h30", "Troupe XYZ"));
-        return rubriques;
+    private Spectacle findSpectacleById(Long id) {
+        // Implémentez cette méthode selon votre source de données
+        // Pour l'exemple, on retourne un spectacle mocké
+        return new Spectacle(id, "Spectacle " + id, "image_url_" + id);
     }
 }

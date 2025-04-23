@@ -1,9 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.Hafleti" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Couleurs Netflix -->
+        <item name="colorPrimary">#E50914</item> <!-- Rouge Netflix -->
+        <item name="colorPrimaryDark">#B20710</item>
+        <item name="colorAccent">#F5F5F1</item> <!-- Beige texte -->
+        <item name="android:windowBackground">#141414</item> <!-- Fond noir -->
     </style>
-
-    <style name="Theme.Hafleti" parent="Base.Theme.Hafleti" />
 </resources>

@@ -3,35 +3,42 @@ package com.example.mobile.mobile.Rubrique.Controller;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.mobile.mobile.Rubrique.DTO.RubriqueRequest;
+import com.example.mobile.mobile.Rubrique.DTO.RubriqueResponse;
 import com.example.mobile.mobile.Rubrique.Model.Rubrique;
 import com.example.mobile.mobile.Rubrique.Service.RubriqueService;
-import com.example.mobile.mobile.Spectacle.Model.Spectacle;
 import com.example.mobile.mobile.Spectacle.Service.SpectacleService;
 
-
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/rubriques")
+@RequiredArgsConstructor
 public class RubriqueController {
-     @Autowired
-    private RubriqueService rubriqueService;
-    @Autowired
-    private SpectacleService spectacleService;
 
-     @PostMapping("/ajouter")
-    public Rubrique ajouterRubrique(@RequestBody Rubrique rubrique) {
-        return rubriqueService.ajouterRubrique(rubrique);
+    private final RubriqueService rubriqueService;
+    private final SpectacleService spectacleService;
+
+    @PostMapping
+    public Rubrique ajouterRubrique(@RequestBody RubriqueRequest request) {
+        return rubriqueService.ajouterRubrique(request);
     }
+    @PostMapping("/batch")
+    public ResponseEntity<List<Rubrique>> ajouterRubriques(@RequestBody List<RubriqueRequest> rubriques) {
+        List<Rubrique> creees = rubriqueService.ajouterRubriques(rubriques);
+        return ResponseEntity.status(HttpStatus.CREATED).body(creees);
+    }
+
 
     @GetMapping("/all")
     public List<Rubrique> getAllRubriques() {
@@ -43,27 +50,15 @@ public class RubriqueController {
         return rubriqueService.getRubriqueById(id);
     }
 
-    /*@GetMapping("/findByName/{name}")
-    public Optional<Rubrique> getRubriqueByName(@PathVariable String name) {
-        return rubriqueService.getRubriqueByName(name);
-    }*/
-
-    @GetMapping("/search")
-    public List<Rubrique> rechercherParSpectacle(@RequestParam Long spectacleId) {
-        Optional<Spectacle> spectacle = spectacleService.getSpectacleById(spectacleId);
-        return spectacle.map(rubriqueService::getRubriqueBySpectacle).orElseThrow(() -> new IllegalArgumentException("Spectacle not found"));
+    @GetMapping("/bySpectacle/{spectacleId}")
+    public ResponseEntity<List<RubriqueResponse>> getRubriquesBySpectacle(@PathVariable Long spectacleId) {
+        return ResponseEntity.ok(rubriqueService.getRubriquesBySpectacle(spectacleId));
     }
+
 
     @DeleteMapping("/supprimer/{id}")
     public String supprimerRubriqueById(@PathVariable Long id) {
         rubriqueService.supprimerRubriqueById(id);
-        return "Rubrique supprimé avec succès";
+        return "Rubrique supprimée avec succès";
     }
-
-    /*@DeleteMapping("/supprimer/{name}")
-    public String supprimerRubriqueByName(@PathVariable String name) {
-        rubriqueService.supprimerRubriqueByName(name);
-        return "Rubrique supprimé avec succès";
-    }*/
-
 }

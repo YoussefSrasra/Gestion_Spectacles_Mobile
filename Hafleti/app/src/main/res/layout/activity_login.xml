@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:id="@+id/login"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="#121212"
+    android:id="@+id/login">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,9 +22,10 @@
             android:layout_marginTop="40dp"
             android:layout_marginBottom="8dp"
             android:text="Hafleti"
-            android:textColor="#FF6F00"
+            android:textColor="#FFFFFF"
             android:textSize="32sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:fontFamily="cursive" />
 
         <!-- Slogan -->
         <TextView
@@ -30,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
             android:text="Réservez vos spectacles facilement"
-            android:textColor="#666666"
+            android:textColor="#CCCCCC"
             android:textSize="16sp" />
 
         <!-- Champ Email -->
@@ -39,12 +42,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            style="@style/EditTextStyle"
             android:drawableStart="@android:drawable/ic_dialog_email"
             android:drawablePadding="10dp"
             android:hint="Email"
             android:inputType="textEmailAddress"
-            android:padding="12dp" />
+            android:padding="12dp"
+            android:backgroundTint="#FFFFFF"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#FFFFFF" />
 
         <!-- Champ Mot de passe -->
         <EditText
@@ -52,12 +57,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            style="@style/EditTextStyle"
             android:drawableStart="@android:drawable/ic_lock_lock"
             android:drawablePadding="10dp"
             android:hint="Mot de passe"
             android:inputType="textPassword"
-            android:padding="12dp" />
+            android:padding="12dp"
+            android:backgroundTint="#FFFFFF"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#FFFFFF" />
 
         <!-- Bouton de connexion -->
         <Button
@@ -67,16 +74,10 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:padding="14dp"
-
             android:textSize="16sp"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
-            android:backgroundTint="#FF6600"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="6dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="4dp"
-          />
+            android:backgroundTint="#000000" />
 
         <!-- Lien vers inscription -->
         <TextView
@@ -84,7 +85,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Pas encore inscrit ? Créez un compte"
-            android:textColor="#FF6F00"
-            android:textSize="14sp" />
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:layout_marginTop="8dp" />
+
     </LinearLayout>
-</ScrollView>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#000000"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
+        app:menu="@menu/bottom_nav_menu" />
+
+</RelativeLayout>

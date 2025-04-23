@@ -11,6 +11,7 @@ import com.example.mobile.mobile.Spectacle.Model.Spectacle;
 @Repository
 public interface RubriqueRepository extends JpaRepository<Rubrique, Long> {
     List<Rubrique> findBySpectacle(Spectacle spectacle);
+    List<Rubrique> findBySpectacleId(Long spectacleId);
     //Optional<Rubrique> findByName(String name);
     //void deleteByName(String name);
 }

@@ -1,7 +1,9 @@
 package com.example.hafleti.Profile;
 
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,17 +14,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.hafleti.Home.ClientHomeActivity;
+import com.example.hafleti.Auth.LoginActivity;
+import com.example.hafleti.Home.HomeActivity;
 import com.example.hafleti.R;
-import com.example.hafleti.Reservation.Reservation;
-import com.example.hafleti.Reservation.ReservationAdapter;
 import com.example.hafleti.Reservation.ReservationsActivity;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.example.hafleti.SearchActivity;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class ProfileActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -57,12 +55,14 @@ public class ProfileActivity extends AppCompatActivity {
         });
         ImageButton navAccueil = findViewById(R.id.navAccueil);
         navAccueil.setOnClickListener(v -> {
-            startActivity(new Intent(this, ClientHomeActivity.class));
+            startActivity(new Intent(this, HomeActivity.class));
         });
         ImageButton navProfil = findViewById(R.id.navProfil);
         navProfil.setOnClickListener(v -> {
             startActivity(new Intent(this, ProfileActivity.class));
         });
+        setupBottomNavigation(this);
+
     }
 
     // 1. Dialog pour modifier les infos
@@ -148,5 +148,41 @@ public class ProfileActivity extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         startActivityForResult(Intent.createChooser(intent, "Choisissez une image"), PICK_IMAGE_REQUEST);
+    }
+    public void setupBottomNavigation(Activity activity) {
+        BottomNavigationView bottomNavigationView = activity.findViewById(R.id.bottomNavigation);
+
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.nav_home) {
+                Intent homeIntent = new Intent(activity, HomeActivity.class);
+                homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                activity.startActivity(homeIntent);
+                return true;
+
+            } else if (itemId == R.id.nav_search) {
+                Intent searchIntent = new Intent(activity, SearchActivity.class);
+                activity.startActivity(searchIntent);
+                return true;
+
+            } else if (itemId == R.id.nav_profile) {
+                if (isUserLoggedIn()) {
+                    activity.startActivity(new Intent(activity, ProfileActivity.class));
+                } else {
+                    activity.startActivity(new Intent(activity, LoginActivity.class));
+                }
+                return true;
+            }
+
+            return false;
+        });
+
+    }
+
+    private boolean isUserLoggedIn() {
+        // Exemple : vérifie dans SharedPreferences si un token ou ID utilisateur existe
+        SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        return prefs.contains("user_id");
     }
 }

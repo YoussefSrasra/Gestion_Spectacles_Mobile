@@ -13,8 +13,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.hafleti.ConfirmationActivity;
-import com.example.hafleti.Home.ClientHomeActivity;
+import com.example.hafleti.Home.HomeActivity;
 import com.example.hafleti.Profile.ProfileActivity;
 import com.example.hafleti.R;
 import com.example.hafleti.Reservation.ReservationsActivity;
@@ -78,7 +77,7 @@ public class PaiementActivity extends AppCompatActivity {
         });
         ImageButton navAccueil = findViewById(R.id.navAccueil);
         navAccueil.setOnClickListener(v -> {
-            startActivity(new Intent(this, ClientHomeActivity.class));
+            startActivity(new Intent(this, HomeActivity.class));
         });
         ImageButton navProfil = findViewById(R.id.navProfil);
         navProfil.setOnClickListener(v -> {
