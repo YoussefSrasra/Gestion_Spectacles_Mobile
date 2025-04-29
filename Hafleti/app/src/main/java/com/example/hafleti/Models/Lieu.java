@@ -7,7 +7,7 @@ public class Lieu {
     private String nom;
     private String adresse;
     private int capacite;
-    private List<Seat> seats;
+
 
     // Constructeurs
     public Lieu() {}
@@ -27,6 +27,5 @@ public class Lieu {
     public void setAdresse(String adresse) { this.adresse = adresse; }
     public int getCapacite() { return capacite; }
     public void setCapacite(int capacite) { this.capacite = capacite; }
-    public List<Seat> getSeats() { return seats; }
-    public void setSeats(List<Seat> seats) { this.seats = seats; }
+
 }

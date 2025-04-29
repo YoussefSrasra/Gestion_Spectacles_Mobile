@@ -3,6 +3,7 @@ package com.example.hafleti.Network;
 import com.example.hafleti.Models.RepresentationResponseDTO;
 
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -12,4 +13,11 @@ public interface RepresentationApiService {
 
     @GET("api/representations/spectacle/{spectacleId}")
     Call<List<RepresentationResponseDTO>> getBySpectacle(@Path("spectacleId") Long spectacleId);
+
+    @GET("api/representations/{id}/available-billets")
+    Call<Map<String, Object>> getAvailableBillets(@Path("id") Long id);
+    @GET("api/representations/{id}")
+    Call<RepresentationResponseDTO> getRepresentationById(@Path("id") Long id);
+
+
 }

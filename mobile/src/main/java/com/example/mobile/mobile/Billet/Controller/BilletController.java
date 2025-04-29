@@ -43,7 +43,7 @@ public class BilletController {
     //     return billetService.acheterBillet(billetId, client);
     // }
 
-    @PostMapping("/bySpectacle")
+    @PostMapping("/byRepresentation")
     public List<Billet> getBilletsBySpectacle(@RequestBody Representation Representation) {
         return billetService.getBilletsByRepresentation(Representation);
     }

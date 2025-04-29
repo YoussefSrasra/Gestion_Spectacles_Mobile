@@ -9,13 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hafleti.Models.Representation;
 import com.example.hafleti.R;
+import com.google.android.material.card.MaterialCardView;
 
 import java.util.List;
 
@@ -23,12 +23,29 @@ public class RepresentationAdapter extends RecyclerView.Adapter<RepresentationAd
 
     private final List<Representation> representations;
     private final Context context;
+    private int selectedPosition = RecyclerView.NO_POSITION;
+
+    private OnRepresentationSelectedListener listener;
+
+    public interface OnRepresentationSelectedListener {
+        void onRepresentationSelected(Representation selected);
+    }
 
     public RepresentationAdapter(Context context, List<Representation> representations) {
         this.context = context;
         this.representations = representations;
     }
 
+    public void setOnRepresentationSelectedListener(OnRepresentationSelectedListener listener) {
+        this.listener = listener;
+    }
+
+    public Representation getSelectedRepresentation() {
+        if (selectedPosition != RecyclerView.NO_POSITION) {
+            return representations.get(selectedPosition);
+        }
+        return null;
+    }
 
     @NonNull
     @Override
@@ -42,12 +59,11 @@ public class RepresentationAdapter extends RecyclerView.Adapter<RepresentationAd
         Representation r = representations.get(position);
         holder.tvLieu.setText(r.getLieu().getNom());
         holder.tvDate.setText("Date: " + r.getDate());
-        holder.tvHeure.setText("Heure: " + r.getHeureDebut());
 
         holder.ivMaps.setOnClickListener(v -> {
             String lieuQuery = r.getLieu().getNom() + " " + r.getLieu().getAdresse();
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + lieuQuery));
-            intent.setPackage("com.google.android.apps.maps") ;
+            intent.setPackage("com.google.android.apps.maps");
 
             if (intent.resolveActivity(context.getPackageManager()) != null) {
                 context.startActivity(intent);
@@ -55,8 +71,30 @@ public class RepresentationAdapter extends RecyclerView.Adapter<RepresentationAd
                 Log.d("ImplicitIntents", "Can't handle this intent!");
             }
         });
-    }
 
+        // Apply border color if selected
+        if (position == selectedPosition) {
+            holder.cardView.setStrokeColor(context.getResources().getColor(R.color.light_green));
+        } else {
+            holder.cardView.setStrokeColor(context.getResources().getColor(android.R.color.transparent));
+        }
+
+        holder.itemView.setOnClickListener(v -> {
+            int previousPosition = selectedPosition;
+            if (holder.getAdapterPosition() == selectedPosition) {
+                // Toggle off
+                selectedPosition = RecyclerView.NO_POSITION;
+                notifyItemChanged(previousPosition);
+                if (listener != null) listener.onRepresentationSelected(null);
+            } else {
+                // Select new
+                selectedPosition = holder.getAdapterPosition();
+                notifyItemChanged(previousPosition);
+                notifyItemChanged(selectedPosition);
+                if (listener != null) listener.onRepresentationSelected(representations.get(selectedPosition));
+            }
+        });
+    }
 
     @Override
     public int getItemCount() {
@@ -64,17 +102,16 @@ public class RepresentationAdapter extends RecyclerView.Adapter<RepresentationAd
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvLieu, tvDate, tvHeure;
+        TextView tvLieu, tvDate;
         ImageView ivMaps;
-
+        MaterialCardView cardView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvLieu = itemView.findViewById(R.id.tvLieu);
             tvDate = itemView.findViewById(R.id.tvDate);
-            tvHeure = itemView.findViewById(R.id.tvHeure);
             ivMaps = itemView.findViewById(R.id.ivMaps);
-
+            cardView = itemView.findViewById(R.id.cardView);
         }
     }
 }

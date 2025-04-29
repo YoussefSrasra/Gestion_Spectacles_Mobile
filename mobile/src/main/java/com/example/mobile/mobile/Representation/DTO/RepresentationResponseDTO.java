@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 public class RepresentationResponseDTO {
     private Long id;
     private String date;
-    private String heureDebut;
-    private String duree;
     private String lieuNom;
     private String lieuAdresse;
 }

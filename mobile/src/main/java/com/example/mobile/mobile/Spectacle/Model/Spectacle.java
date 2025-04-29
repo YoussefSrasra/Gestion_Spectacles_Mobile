@@ -1,5 +1,7 @@
 package com.example.mobile.mobile.Spectacle.Model;
 
+import java.math.BigDecimal;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,6 +36,11 @@ public class Spectacle {
 
     @Lob
     private String image;
+    private String description;
+    private String typeSpectacle;
+    private LocalTime heureDebut;
+    private BigDecimal prixmin;
+    private String duree;
 
     @OneToMany(mappedBy = "spectacle", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore

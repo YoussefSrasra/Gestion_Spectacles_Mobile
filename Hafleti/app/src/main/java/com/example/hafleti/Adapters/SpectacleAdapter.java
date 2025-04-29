@@ -12,9 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.hafleti.Models.Spectacle;
+import com.example.hafleti.Models.SpectacleHomeDTO;
 import com.example.hafleti.R;
 import com.example.hafleti.Utils.ImageUtils;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class SpectacleAdapter extends RecyclerView.Adapter<SpectacleAdapter.ViewHolder> {
@@ -33,6 +35,7 @@ public class SpectacleAdapter extends RecyclerView.Adapter<SpectacleAdapter.View
         this.listener = listener;
     }
 
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -43,10 +46,21 @@ public class SpectacleAdapter extends RecyclerView.Adapter<SpectacleAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Spectacle spectacle = spectacleList.get(position);
+
+        // Set all text fields
         holder.title.setText(spectacle.getTitre());
+        /*holder.description.setText(spectacle.getDescription());
+        holder.type.setText(spectacle.getTypeSpectacle());*/
 
+        // Format duration and price
+        String durationText = "Durée: " + spectacle.getDuree();
+        holder.duree.setText(durationText);
+
+        String priceText = "À partir de: " + spectacle.getPrixmin() + " TND";
+        holder.prix.setText(priceText);
+
+        // Load image
         byte[] imageBytes = ImageUtils.decodeBase64Image(spectacle.getImage());
-
         if (imageBytes != null) {
             Glide.with(context)
                     .asBitmap()
@@ -69,11 +83,19 @@ public class SpectacleAdapter extends RecyclerView.Adapter<SpectacleAdapter.View
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView image;
         TextView title;
+        TextView description;
+        TextView type;
+        TextView duree;
+        TextView prix;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             image = itemView.findViewById(R.id.imgSpectacle);
             title = itemView.findViewById(R.id.titreSpectacle);
+            /*description = itemView.findViewById(R.id.descriptionSpectacle);
+            type = itemView.findViewById(R.id.typeSpectacle);*/
+            duree = itemView.findViewById(R.id.dureeSpectacle);
+            prix = itemView.findViewById(R.id.prixSpectacle);
         }
     }
 }

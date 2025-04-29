@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hafleti.Auth.LoginActivity;
@@ -46,7 +47,7 @@ public class HomeActivity extends AppCompatActivity {
         context = this; // Initialize context
 
         recyclerView = findViewById(R.id.recyclerSpectacles);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         setupBottomNavigation(this);
 
         fetchSpectacles();

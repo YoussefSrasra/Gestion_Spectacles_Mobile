@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.example.mobile.mobile.Lieu.Model.Lieu;
 import com.example.mobile.mobile.Lieu.Repository.LieuRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -24,9 +25,12 @@ public class LieuService {
         return lieuRepository.findById(id);
     }
 
+    @Transactional
     public Lieu save(Lieu lieu) {
+        // Save Lieu to get the ID
         return lieuRepository.save(lieu);
     }
+
 
     public void delete(Long id) {
         lieuRepository.deleteById(id);

@@ -33,28 +33,9 @@ public class BilletService {
         return billetRepository.findByRepresentation(Representation);
     }
 
-    // public List<Billet> getBilletsByClient(Client client) {
-    //     return billetRepository.findByClient(client);
-    // }
 
     public void supprimerBillet(Long id) {
         billetRepository.deleteById(id);
     }
 
-    // Acheter un billet : associer un billet libre à un client
-    // public String acheterBillet(Long billetId, Client client) {
-    //     Optional<Billet> billetOpt = billetRepository.findById(billetId);
-    //     if (billetOpt.isPresent()) {
-    //         Billet billet = billetOpt.get();
-    //         if (billet.isVendu()) {
-    //             return "Ce billet est déjà vendu.";
-    //         }
-    //         billet.setClient(client);
-    //         billet.setVendu(true);
-    //         billetRepository.save(billet);
-    //         return "Billet acheté avec succès.";
-    //     } else {
-    //         return "Billet introuvable.";
-    //     }
-    // }
 }

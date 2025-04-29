@@ -7,11 +7,13 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -65,6 +67,15 @@ public class RepresentationActivity extends AppCompatActivity {
         // Initialise l’adaptateur dès le début
         adapter = new RepresentationAdapter(this, representationList);
         recyclerView.setAdapter(adapter);
+        adapter.setOnRepresentationSelectedListener(selectedRepresentation -> {
+            Button reserverButton = findViewById(R.id.btnReserver);
+            reserverButton.setEnabled(true);
+            reserverButton.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
+        });
+
+        Button reserverButton = findViewById(R.id.btnReserver);
+        reserverButton.setEnabled(false); // initially disabled
+        reserverButton.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.gray)); // add gray color if you want
         recyclerViewRubriques = findViewById(R.id.recyclerViewRubriques);
         recyclerViewRubriques.setLayoutManager(new LinearLayoutManager(this));
         rubriqueAdapter = new RubriqueAdapter(rubriqueList);
@@ -72,6 +83,18 @@ public class RepresentationActivity extends AppCompatActivity {
         spectacleId = getIntent().getLongExtra("spectacle_id", -1);
         fetchSpectacleDetails();
         setupBottomNavigation(this);
+        findViewById(R.id.btnReserver).setOnClickListener(v -> {
+            Representation selectedRepresentation = adapter.getSelectedRepresentation();
+            if (selectedRepresentation != null) {
+                Intent intent = new Intent(RepresentationActivity.this, BilletActivity.class);
+                System.out.println("Representation id: " + selectedRepresentation.getId());
+                intent.putExtra("representation_id", selectedRepresentation.getId());
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Veuillez sélectionner une représentation.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         if (spectacleId != -1) {
             fetchRepresentations();
             fetchRubriques();
@@ -97,11 +120,11 @@ public class RepresentationActivity extends AppCompatActivity {
                     for (RepresentationResponseDTO dto : dtoList) {
                         Representation rep = new Representation();
                         rep.setId(dto.getId());
-                        rep.setDuree(String.valueOf(dto.getDuree()));
+                        //rep.setDuree(String.valueOf(dto.getDuree()));
 
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                             rep.setDate(LocalDate.parse(dto.getDate()));
-                            rep.setHeureDebut(LocalTime.parse(dto.getHeureDebut()));
+                            //rep.setHeureDebut(LocalTime.parse(dto.getHeureDebut()));
                         }
 
                         Lieu lieu = new Lieu();
@@ -169,8 +192,10 @@ public class RepresentationActivity extends AppCompatActivity {
 
                     TextView titreTextView = findViewById(R.id.titreSpectacle);
                     ImageView imageView = findViewById(R.id.imageSpectacle);
+                    TextView descriptionTextView = findViewById(R.id.descriptionSpectacle);
 
                     titreTextView.setText(spectacle.getTitre());
+                    descriptionTextView.setText(spectacle.getDescription());
 
                     Bitmap bitmap = base64ToBitmap(spectacle.getImage());
                     imageView.setImageBitmap(bitmap);
@@ -186,6 +211,8 @@ public class RepresentationActivity extends AppCompatActivity {
         });
 
     }
+
+
 
     private Bitmap base64ToBitmap(String base64Image) {
         byte[] decodedString = android.util.Base64.decode(base64Image, android.util.Base64.DEFAULT);

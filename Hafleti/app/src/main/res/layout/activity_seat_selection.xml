@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Titre -->
+    <TextView
+        android:id="@+id/txtTitre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sélectionnez vos places"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_margin="16dp"
+        android:layout_centerHorizontal="true" />
+
+    <!-- Zone du plan de salle -->
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_below="@id/txtTitre"
+        android:layout_above="@+id/btnReserver"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="false"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="60dp">
+
+        <GridLayout
+            android:id="@+id/seatGrid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="10"
+            android:padding="16dp"
+            android:alignmentMode="alignMargins"
+            android:rowCount="20"
+            android:layout_gravity="center"
+            android:useDefaultMargins="true" />
+    </ScrollView>
+
+    <!-- Bouton Réserver -->
+    <Button
+        android:id="@+id/btnReserver"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Réserver"
+        android:textAllCaps="false"
+        android:textStyle="bold"
+        android:backgroundTint="#000000"
+        android:textColor="@android:color/white"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp" />
+
+</RelativeLayout>

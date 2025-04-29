@@ -3,6 +3,7 @@ package com.example.mobile.mobile.Billet.Model;
 import java.math.BigDecimal;
 
 import com.example.mobile.mobile.Representation.Model.Representation;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -13,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,6 +24,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Billet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +37,7 @@ public class Billet {
 
     @ManyToOne
     @JoinColumn(name = "representation_id")
+    @JsonBackReference
     private Representation representation;
 
     public enum BilletType {

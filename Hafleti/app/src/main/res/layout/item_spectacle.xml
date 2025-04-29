@@ -6,6 +6,7 @@
     android:layout_height="200dp"
     android:layout_margin="8dp"
     app:cardCornerRadius="8dp"
+    android:layout_marginBottom="8dp"
     app:cardElevation="4dp">
 
     <RelativeLayout
@@ -19,15 +20,61 @@
             android:scaleType="centerCrop"
             android:contentDescription="Affiche du spectacle"/>
 
-        <TextView
-            android:id="@+id/titreSpectacle"
+        <!-- Info container at bottom -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:background="#80000000"
-            android:padding="8dp"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:textStyle="bold"/>
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/titreSpectacle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold"/>
+
+            <!--<TextView
+                android:id="@+id/descriptionSpectacle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:maxLines="2"
+                android:ellipsize="end"/>
+
+            <TextView
+                android:id="@+id/typeSpectacle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"/>-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/dureeSpectacle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:layout_marginEnd="16dp"/>
+
+                <TextView
+                    android:id="@+id/prixSpectacle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+        </LinearLayout>
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

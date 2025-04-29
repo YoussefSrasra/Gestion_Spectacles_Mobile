@@ -1,14 +1,14 @@
 package com.example.mobile.mobile.Representation.Model;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.example.mobile.mobile.Billet.Model.Billet;
 import com.example.mobile.mobile.Lieu.Model.Lieu;
-import com.example.mobile.mobile.SeatStatus.Model.SeatStatus;
 import com.example.mobile.mobile.Spectacle.Model.Spectacle;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -36,18 +36,18 @@ public class Representation {
     private Long id;
 
     private LocalDate date;
-    private LocalTime heureDebut;
-    private String duree;
+   
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER) // changed from LAZY to EAGER
     @JoinColumn(name = "spectacle_id", nullable = true)
     @JsonBackReference
     private Spectacle spectacle;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER) 
     @JoinColumn(name = "lieu_id", nullable = true)
     private Lieu lieu;
 
-    @OneToMany(mappedBy = "representation", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<SeatStatus> seatStatuses = new HashSet<>();
+    @OneToMany(mappedBy = "representation", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY) // added fetch
+    @JsonManagedReference
+    private Set<Billet> billets = new HashSet<>();
 }

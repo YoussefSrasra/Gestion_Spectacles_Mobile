@@ -30,8 +30,10 @@ public class RubriqueController {
     private final SpectacleService spectacleService;
 
     @PostMapping
-    public Rubrique ajouterRubrique(@RequestBody RubriqueRequest request) {
-        return rubriqueService.ajouterRubrique(request);
+    public RubriqueResponse ajouterRubrique(@RequestBody RubriqueRequest request) {
+        Rubrique rubrique = rubriqueService.ajouterRubrique(request);
+        return new RubriqueResponse(rubrique.getId(), rubrique.getHeureDebutRubrique(), rubrique
+    .getDureeRubrique(), rubrique.getType(), rubrique.getArtiste().getId(), rubrique.getArtiste().getNom()+rubrique.getArtiste().getPrenom(), rubrique.getSpectacle().getId());
     }
     @PostMapping("/batch")
     public ResponseEntity<List<Rubrique>> ajouterRubriques(@RequestBody List<RubriqueRequest> rubriques) {

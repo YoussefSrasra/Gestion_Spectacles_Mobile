@@ -1,16 +1,16 @@
 package com.example.mobile.mobile.Lieu.Model;
-
-import com.example.mobile.mobile.Seat.Model.Seat;
-import jakarta.persistence.*;
-import lombok.*;
-
-import java.util.Set;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Lieu {
 
     @Id
@@ -20,7 +20,4 @@ public class Lieu {
     private String nom;
     private String adresse;
     private int capacite;
-
-    @OneToMany(mappedBy = "lieu", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Seat> seats;
 }
