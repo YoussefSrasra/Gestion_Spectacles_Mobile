@@ -5,27 +5,17 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.hafleti.Auth.LoginActivity;
-import com.example.hafleti.Network.ApiClient;
-import com.example.hafleti.Network.ApiService;
 import com.example.hafleti.R;
-import com.example.hafleti.Models.Client;
+import com.example.hafleti.Models.ClientDTO;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Map;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class RegisterPage3Activity extends AppCompatActivity {
 
@@ -59,7 +49,7 @@ public class RegisterPage3Activity extends AppCompatActivity {
         password = data.getStringExtra("password");
 
         finishButton.setOnClickListener(v -> {
-            Client client = new Client(
+            ClientDTO clientDTO = new ClientDTO(
                     nom,
                     prenom,
                     email,
@@ -69,7 +59,7 @@ public class RegisterPage3Activity extends AppCompatActivity {
                     dateNaissance,     // ici date naissance en format String "1990-01-01"
                     photoBase64           // pour photo, tu peux mettre null ou "" si pas encore d'image
             );
-            registerClient(client);
+            //registerClient(clientDTO);
         });
     }
 
@@ -96,7 +86,7 @@ public class RegisterPage3Activity extends AppCompatActivity {
         }
     }
 
-    private void registerClient(Client client) {
+    /*private void registerClient(ClientDTO client) {
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
         Call<Map<String, String>> call = apiService.registerClient(client);
 
@@ -122,7 +112,7 @@ public class RegisterPage3Activity extends AppCompatActivity {
                 Toast.makeText(RegisterPage3Activity.this, "⚠️ Erreur de connexion : " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
-    }
+    }*/
 
     private String encodeImageToBase64(Bitmap bitmap) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

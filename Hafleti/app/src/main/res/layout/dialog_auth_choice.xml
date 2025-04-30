@@ -1,0 +1,59 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="#121212"
+    android:padding="24dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:text="Comment souhaitez-vous continuer ?"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="24dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btnLogin"
+        android:text="SE CONNECTER"
+        android:drawableStart="@drawable/ic_login"
+        android:background="@drawable/outline_button"
+        android:textAllCaps="true"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btnRegister"
+        android:text="CRÉER UN COMPTE"
+        android:drawableStart="@drawable/ic_register"
+        android:background="@drawable/outline_button"
+        android:textAllCaps="true"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btnGuest"
+        android:text="CONTINUER EN INVITÉ"
+        android:drawableStart="@drawable/ic_guest"
+        android:background="@drawable/outline_button"
+        android:textAllCaps="true"
+        android:textColor="#FFFFFF"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:text="Vos données seront utilisées pour la réservation"
+        android:textColor="#AAAAAA"
+        android:textSize="12sp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

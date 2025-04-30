@@ -1,35 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:background="#121212"
+    android:padding="24dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <EditText
         android:id="@+id/dialogEditLastName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
         android:hint="Nom"
-        android:layout_marginBottom="8dp"/>
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="#AAAAAA"
+        android:inputType="textPersonName" />
+
     <EditText
         android:id="@+id/dialogEditFirstName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
         android:hint="Prénom"
-        android:layout_marginBottom="8dp"/>
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="#AAAAAA"
+        android:inputType="textPersonName" />
 
     <EditText
         android:id="@+id/dialogEditEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
         android:hint="Email"
-        android:inputType="textEmailAddress"
-        android:layout_marginBottom="8dp"/>
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="#AAAAAA"
+        android:inputType="textEmailAddress" />
 
     <EditText
         android:id="@+id/dialogEditPhone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
         android:hint="Téléphone"
-        android:inputType="phone"/>
+        android:backgroundTint="#AAAAAA"
+        android:inputType="phone"
+        android:layout_marginBottom="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:weightSum="2">
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Annuler"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/outline_button"
+            android:layout_marginEnd="8dp"/>
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Enregistrer"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/outline_button" />
+    </LinearLayout>
 </LinearLayout>

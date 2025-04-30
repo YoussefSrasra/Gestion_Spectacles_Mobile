@@ -10,14 +10,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hafleti.Auth.LoginActivity;
+import com.example.hafleti.Auth.Register.RegisterPage1Activity;
 import com.example.hafleti.Home.HomeActivity;
 import com.example.hafleti.Models.BilletType;
 import com.example.hafleti.Models.RepresentationResponseDTO;
 import com.example.hafleti.Network.ApiClient;
 import com.example.hafleti.Network.RepresentationApiService;
+import com.example.hafleti.Paiement.PaiementActivity;
 import com.example.hafleti.Profile.ProfileActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -71,9 +75,14 @@ public class BilletActivity extends AppCompatActivity {
         fetchRepresentationDetails();
 
         btnContinuer.setOnClickListener(v -> {
-            // TODO: Handle next step (e.g., send selected tickets to backend or next activity)
-            Toast.makeText(this, "Continuer cliqué", Toast.LENGTH_SHORT).show();
+            if (isUserLoggedIn(this)) {
+                Intent intent = new Intent(BilletActivity.this, PaiementActivity.class);
+                startActivity(intent);
+            } else {
+                showAuthChoiceDialog(); // show popup if not logged in
+            }
         });
+
         setupBottomNavigation(this);
         fetchBilletsFromBackend();
     }
@@ -232,19 +241,19 @@ public class BilletActivity extends AppCompatActivity {
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
-            if (itemId == R.id.nav_home) {
-                Intent homeIntent = new Intent(activity, HomeActivity.class);
-                homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                activity.startActivity(homeIntent);
-                return true;
-
-            } else if (itemId == R.id.nav_search) {
+            if (itemId == R.id.nav_search) {
                 Intent searchIntent = new Intent(activity, SearchActivity.class);
                 activity.startActivity(searchIntent);
                 return true;
 
-            } else if (itemId == R.id.nav_profile) {
-                if (isUserLoggedIn()) {
+            }
+            else if (itemId == R.id.nav_home) {
+                Intent homeIntent = new Intent(activity, HomeActivity.class);
+                activity.startActivity(homeIntent);
+                return true;
+
+            }else if (itemId == R.id.nav_profile) {
+                if (isUserLoggedIn(activity)) {
                     activity.startActivity(new Intent(activity, ProfileActivity.class));
                 } else {
                     activity.startActivity(new Intent(activity, LoginActivity.class));
@@ -256,9 +265,46 @@ public class BilletActivity extends AppCompatActivity {
         });
 
     }
-    private boolean isUserLoggedIn() {
-        // Exemple : vérifie dans SharedPreferences si un token ou ID utilisateur existe
-        SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
-        return prefs.contains("user_id");
+
+    private boolean isUserLoggedIn(Activity activity) {
+        SharedPreferences prefs = activity.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        return prefs.contains("token"); // or use prefs.getString("token", null) != null
     }
+
+    private void showAuthChoiceDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this); // Optional custom style
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_auth_choice, null);
+        builder.setView(dialogView);
+
+        AlertDialog dialog = builder.create();
+
+        Button btnLogin = dialogView.findViewById(R.id.btnLogin);
+        Button btnRegister = dialogView.findViewById(R.id.btnRegister);
+        Button btnGuest = dialogView.findViewById(R.id.btnGuest);
+
+        btnLogin.setOnClickListener(v -> {
+            dialog.dismiss();
+            Intent loginIntent = new Intent(this, LoginActivity.class);
+            loginIntent.putExtra("from_billet", true);
+            startActivity(loginIntent);
+
+
+        });
+
+        btnRegister.setOnClickListener(v -> {
+            dialog.dismiss();
+            startActivity(new Intent(this, RegisterPage1Activity.class));
+        });
+
+        btnGuest.setOnClickListener(v -> {
+            dialog.dismiss();
+            startActivity(new Intent(this, SearchActivity.class));
+        });
+
+        dialog.show();
+    }
+
+
+
+
 }

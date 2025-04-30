@@ -2,13 +2,14 @@ package com.example.hafleti.Profile;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -17,19 +18,35 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hafleti.Auth.LoginActivity;
 import com.example.hafleti.Home.HomeActivity;
+import com.example.hafleti.Models.ClientDTO;
+import com.example.hafleti.Network.ApiClient;
+import com.example.hafleti.Network.ApiService;
 import com.example.hafleti.R;
-import com.example.hafleti.Reservation.ReservationsActivity;
 import com.example.hafleti.SearchActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class ProfileActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
+    private ClientDTO currentClientDTO;
+    private SharedPreferences prefs;
+    private ApiService apiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
+        prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        apiService = ApiClient.getClient().create(ApiService.class);
+        String clientEmail = prefs.getString("user_email", null);
+        Log.d("ProfileDebug", "Client Email : " + clientEmail);
+        if (clientEmail != null) {
+            fetchClientInfo(clientEmail);
+            Log.d("ProfileDebug", "Fetch called ");
+        }
         // Gestion photo de profil (identique à avant)
         ImageView profileImage = findViewById(R.id.profileImage);
         Button changePhotoBtn = findViewById(R.id.changePhotoBtn);
@@ -42,28 +59,53 @@ public class ProfileActivity extends AppCompatActivity {
         // 2. Bouton "Changer mot de passe"
         Button changePasswordBtn = findViewById(R.id.changePasswordBtn);
         changePasswordBtn.setOnClickListener(v -> showChangePasswordDialog());
+        Button logoutBtn = findViewById(R.id.logoutBtn);
+        logoutBtn.setOnClickListener(v -> {
+            // Clear token and user data from SharedPreferences
+            SharedPreferences prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.clear(); // Removes all keys
+            editor.apply();
 
+            // Redirect to LoginActivity and clear back stack
+            Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        });
         // 3. Bouton "Historique réservations"
         /*Button historyBtn = findViewById(R.id.historyBtn);
         historyBtn.setOnClickListener(v -> {
             Intent intent = new Intent(this, HistoryActivity.class);
             startActivity(intent);
         });*/
-        ImageButton navReservations = findViewById(R.id.navReservations);
-        navReservations.setOnClickListener(v -> {
-            startActivity(new Intent(this, ReservationsActivity.class));
-        });
-        ImageButton navAccueil = findViewById(R.id.navAccueil);
-        navAccueil.setOnClickListener(v -> {
-            startActivity(new Intent(this, HomeActivity.class));
-        });
-        ImageButton navProfil = findViewById(R.id.navProfil);
-        navProfil.setOnClickListener(v -> {
-            startActivity(new Intent(this, ProfileActivity.class));
-        });
+
         setupBottomNavigation(this);
 
     }
+
+    private void fetchClientInfo(String email) {
+        Call<ClientDTO> call = apiService.getClientByEmail(email);
+        call.enqueue(new Callback<ClientDTO>() {
+            @Override
+            public void onResponse(Call<ClientDTO> call, Response<ClientDTO> response) {
+                if (response.isSuccessful()) {
+                    currentClientDTO = response.body();
+                    Log.d("ProfileDebug", "Response code: " + response.code());
+                    Log.d("ProfileDebug", "Response body: " + response.body());
+                }
+                else{
+                    Log.d("ProfileDebug", "Response body: Nothing to show");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ClientDTO> call, Throwable t) {
+                Toast.makeText(ProfileActivity.this, "Erreur de chargement", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     // 1. Dialog pour modifier les infos
     private void showEditInfoDialog() {
@@ -75,49 +117,81 @@ public class ProfileActivity extends AppCompatActivity {
         EditText editEmail = dialogView.findViewById(R.id.dialogEditEmail);
         EditText editPhone = dialogView.findViewById(R.id.dialogEditPhone);
 
-        // Pré-remplir avec les données actuelles (à adapter)
-        editFirstName.setText("Youssef");
-        editLastName.setText("Srasra");
-        editEmail.setText("youssefsrasra8@email.com");
-        editPhone.setText("54848072");
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+        Button btnSave = dialogView.findViewById(R.id.btnSave);
 
-        builder.setView(dialogView)
-                .setTitle("Modifier mes informations")
-                .setPositiveButton("Enregistrer", (dialog, which) -> {
-                    // Valider et sauvegarder les changements
-                    Toast.makeText(this, "Infos mises à jour !", Toast.LENGTH_SHORT).show();
-                })
-                .setNegativeButton("Annuler", null)
-                .show();
+        AlertDialog dialog = builder.setView(dialogView).create();
+
+        if (currentClientDTO != null) {
+            editFirstName.setText(currentClientDTO.getPrenom());
+            editLastName.setText(currentClientDTO.getNom());
+            editEmail.setText(currentClientDTO.getEmail());
+            editPhone.setText(currentClientDTO.getNumeroTel());
+        }
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        btnSave.setOnClickListener(v -> {
+            currentClientDTO.setPrenom(editFirstName.getText().toString());
+            currentClientDTO.setNom(editLastName.getText().toString());
+            currentClientDTO.setEmail(editEmail.getText().toString());
+            currentClientDTO.setNumeroTel(editPhone.getText().toString());
+
+            apiService.updateClient(currentClientDTO).enqueue(new Callback<ClientDTO>() {
+                @Override
+                public void onResponse(Call<ClientDTO> call, Response<ClientDTO> response) {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(ProfileActivity.this, "Infos mises à jour !", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(ProfileActivity.this, "Erreur lors de la mise à jour", Toast.LENGTH_SHORT).show();
+                    }
+                    dialog.dismiss();
+                }
+
+                @Override
+                public void onFailure(Call<ClientDTO> call, Throwable t) {
+                    Toast.makeText(ProfileActivity.this, "Erreur serveur", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                }
+            });
+        });
+
+        dialog.show();
     }
+
 
     // 2. Dialog pour changer le mot de passe
     private void showChangePasswordDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CustomAlertDialog);
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_change_password, null);
 
         EditText oldPassword = dialogView.findViewById(R.id.oldPassword);
         EditText newPassword = dialogView.findViewById(R.id.newPassword);
         EditText confirmPassword = dialogView.findViewById(R.id.confirmPassword);
 
-        builder.setView(dialogView)
-                .setTitle("Changer mon mot de passe")
-                .setPositiveButton("Valider", (dialog, which) -> {
-                    String oldPwd = oldPassword.getText().toString();
-                    String newPwd = newPassword.getText().toString();
-                    String confirmPwd = confirmPassword.getText().toString();
+        Button btnCancel = dialogView.findViewById(R.id.btnCancelPassword);
+        Button btnSave = dialogView.findViewById(R.id.btnSavePassword);
 
-                    if (newPwd.equals(confirmPwd)) {
-                        // Vérifier l'ancien mot de passe (backend) puis enregistrer
-                        Toast.makeText(this, "Mot de passe changé !", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(this, "Les mots de passe ne correspondent pas", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setNegativeButton("Annuler", null)
-                .show();
+        AlertDialog dialog = builder.setView(dialogView).create();
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        btnSave.setOnClickListener(v -> {
+            String oldPwd = oldPassword.getText().toString();
+            String newPwd = newPassword.getText().toString();
+            String confirmPwd = confirmPassword.getText().toString();
+
+            if (newPwd.equals(confirmPwd)) {
+                // TODO: Replace with actual verification & backend call
+                Toast.makeText(this, "Mot de passe changé !", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            } else {
+                Toast.makeText(this, "Les mots de passe ne correspondent pas", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        dialog.show();
     }
-
     // 3. Historique (activité séparée)
     /*private static class HistoryActivity extends AppCompatActivity {
         @Override
@@ -155,23 +229,13 @@ public class ProfileActivity extends AppCompatActivity {
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
-            if (itemId == R.id.nav_home) {
-                Intent homeIntent = new Intent(activity, HomeActivity.class);
-                homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                activity.startActivity(homeIntent);
-                return true;
-
-            } else if (itemId == R.id.nav_search) {
+            if (itemId == R.id.nav_search) {
                 Intent searchIntent = new Intent(activity, SearchActivity.class);
                 activity.startActivity(searchIntent);
                 return true;
 
-            } else if (itemId == R.id.nav_profile) {
-                if (isUserLoggedIn()) {
-                    activity.startActivity(new Intent(activity, ProfileActivity.class));
-                } else {
-                    activity.startActivity(new Intent(activity, LoginActivity.class));
-                }
+            } else if (itemId == R.id.nav_home) {
+                activity.startActivity(new Intent(activity, HomeActivity.class));
                 return true;
             }
 
@@ -180,9 +244,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
-    private boolean isUserLoggedIn() {
-        // Exemple : vérifie dans SharedPreferences si un token ou ID utilisateur existe
-        SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
-        return prefs.contains("user_id");
+    private boolean isUserLoggedIn(Activity activity) {
+        SharedPreferences prefs = activity.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        return prefs.contains("token"); // or use prefs.getString("token", null) != null
     }
 }

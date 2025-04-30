@@ -86,19 +86,13 @@ public class HomeActivity extends AppCompatActivity {
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
-            /*if (itemId == R.id.nav_home) {
-                Intent homeIntent = new Intent(activity, HomeActivity.class);
-                homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                activity.startActivity(homeIntent);
-                return true;*/
-
-             if (itemId == R.id.nav_search) {
+            if (itemId == R.id.nav_search) {
                 Intent searchIntent = new Intent(activity, SearchActivity.class);
                 activity.startActivity(searchIntent);
                 return true;
 
             } else if (itemId == R.id.nav_profile) {
-                if (isUserLoggedIn()) {
+                if (isUserLoggedIn(activity)) {
                     activity.startActivity(new Intent(activity, ProfileActivity.class));
                 } else {
                     activity.startActivity(new Intent(activity, LoginActivity.class));
@@ -111,10 +105,9 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    private boolean isUserLoggedIn() {
-        // Exemple : vérifie dans SharedPreferences si un token ou ID utilisateur existe
-        SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
-        return prefs.contains("user_id");
+    private boolean isUserLoggedIn(Activity activity) {
+        SharedPreferences prefs = activity.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        return prefs.contains("token"); // or use prefs.getString("token", null) != null
     }
 
 }
