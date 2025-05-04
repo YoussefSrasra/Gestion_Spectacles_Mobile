@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,13 +17,16 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.hafleti.Auth.LoginActivity;
 import com.example.hafleti.Home.HomeActivity;
+import com.example.hafleti.MesReservationsActivity;
 import com.example.hafleti.Models.ClientDTO;
 import com.example.hafleti.Network.ApiClient;
 import com.example.hafleti.Network.ApiService;
 import com.example.hafleti.R;
 import com.example.hafleti.SearchActivity;
+import com.example.hafleti.Utils.ImageUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import retrofit2.Call;
@@ -34,6 +38,8 @@ public class ProfileActivity extends AppCompatActivity {
     private ClientDTO currentClientDTO;
     private SharedPreferences prefs;
     private ApiService apiService;
+    ImageView profileImageView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +53,10 @@ public class ProfileActivity extends AppCompatActivity {
             fetchClientInfo(clientEmail);
             Log.d("ProfileDebug", "Fetch called ");
         }
-        // Gestion photo de profil (identique à avant)
-        ImageView profileImage = findViewById(R.id.profileImage);
+
         Button changePhotoBtn = findViewById(R.id.changePhotoBtn);
         changePhotoBtn.setOnClickListener(v -> openGallery());
+        profileImageView= findViewById(R.id.profileImage);
 
         // 1. Bouton "Modifier infos générales"
         Button editInfoBtn = findViewById(R.id.editInfoBtn);
@@ -73,12 +79,12 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
-        // 3. Bouton "Historique réservations"
-        /*Button historyBtn = findViewById(R.id.historyBtn);
+        // 3. Bouton "Historique réservations"*
+        Button historyBtn = findViewById(R.id.historyBtn);
         historyBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(this, HistoryActivity.class);
+            Intent intent = new Intent(this, MesReservationsActivity.class);
             startActivity(intent);
-        });*/
+        });
 
         setupBottomNavigation(this);
 
@@ -93,6 +99,16 @@ public class ProfileActivity extends AppCompatActivity {
                     currentClientDTO = response.body();
                     Log.d("ProfileDebug", "Response code: " + response.code());
                     Log.d("ProfileDebug", "Response body: " + response.body());
+                    if (currentClientDTO != null && currentClientDTO.getPhoto() != null) {
+                        try {
+                            byte[] decodedString = android.util.Base64.decode(currentClientDTO.getPhoto(), android.util.Base64.DEFAULT);
+                            Bitmap decodedByte = android.graphics.BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                            profileImageView.setImageBitmap(decodedByte);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(ProfileActivity.this, "Erreur lors du décodage de l'image", Toast.LENGTH_SHORT).show();
+                        }
+                    }
                 }
                 else{
                     Log.d("ProfileDebug", "Response body: Nothing to show");
@@ -223,6 +239,7 @@ public class ProfileActivity extends AppCompatActivity {
         intent.setType("image/*");
         startActivityForResult(Intent.createChooser(intent, "Choisissez une image"), PICK_IMAGE_REQUEST);
     }
+
     public void setupBottomNavigation(Activity activity) {
         BottomNavigationView bottomNavigationView = activity.findViewById(R.id.bottomNavigation);
 

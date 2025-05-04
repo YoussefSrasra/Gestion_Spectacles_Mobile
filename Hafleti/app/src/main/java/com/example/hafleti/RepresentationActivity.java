@@ -90,6 +90,7 @@ public class RepresentationActivity extends AppCompatActivity {
                 Intent intent = new Intent(RepresentationActivity.this, BilletActivity.class);
                 System.out.println("Representation id: " + selectedRepresentation.getId());
                 intent.putExtra("representation_id", selectedRepresentation.getId());
+                intent.putExtra("spectacle_id", spectacleId);
                 startActivity(intent);
             } else {
                 Toast.makeText(this, "Veuillez sélectionner une représentation.", Toast.LENGTH_SHORT).show();

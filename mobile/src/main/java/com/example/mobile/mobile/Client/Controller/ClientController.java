@@ -2,6 +2,7 @@ package com.example.mobile.mobile.Client.Controller;
 
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import com.example.mobile.mobile.Client.Model.Client;
 import com.example.mobile.mobile.Client.Service.ClientService;
 import com.example.mobile.mobile.Client.Util.JwtUtil;
 
+
 @RestController
 @RequestMapping("/api/clients")
 public class ClientController {
@@ -32,10 +34,9 @@ public class ClientController {
     private JwtUtil jwtUtil;
 
     @PostMapping("/signup")
-    public String signup(@RequestBody Client client) {
+    public Map<String, String> signup(@RequestBody Client client) {
         clientService.registerClient(client);
-        return "Inscription réussie.";
-    }
+        return Map.of("message", "Inscription réussie.");    }
 
     
 
@@ -50,7 +51,7 @@ public class ClientController {
         }
 
         String token = jwtUtil.generateToken(client.getEmail());
-        return ResponseEntity.ok(new LoginResponse(token, client.getEmail(), client.getNom(), client.getPrenom()));
+        return ResponseEntity.ok(new LoginResponse(token, client.getId(),client.getEmail(), client.getNom(), client.getPrenom()));
     }
 
     
@@ -75,4 +76,5 @@ public class ClientController {
         }
 
     }
+    
 }

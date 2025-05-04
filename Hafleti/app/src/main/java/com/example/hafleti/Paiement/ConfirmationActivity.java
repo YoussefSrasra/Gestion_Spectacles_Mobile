@@ -1,4 +1,4 @@
-package com.example.hafleti.Paiement;
+/*package com.example.hafleti.Paiement;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -102,4 +102,4 @@ public class ConfirmationActivity extends AppCompatActivity {
             return null;
         }
     }
-}
+}*/

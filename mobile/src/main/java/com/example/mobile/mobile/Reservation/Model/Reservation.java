@@ -1,5 +1,7 @@
 package com.example.mobile.mobile.Reservation.Model;
 
+import java.util.HashMap;
+
 import com.example.mobile.mobile.Client.Model.Client;
 import com.example.mobile.mobile.Representation.Model.Representation;
 
@@ -25,9 +27,9 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private int nombreBillets;
-
+    private String email; // Email of the user (client or guest)
+    private String fullName; // Full name of the user (client or guest)
+    private int nombreBillets; // Total number of tickets reserved
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;
@@ -35,5 +37,8 @@ public class Reservation {
     @ManyToOne
     @JoinColumn(name = "representation_id")
     private Representation representation;
+
+    private HashMap<String, Integer> billets;
+
 
 }

@@ -43,7 +43,9 @@ public class BilletActivity extends AppCompatActivity {
     private Map<String, Integer> selectedQuantities = new HashMap<>();
     private LayoutInflater inflater;
 
-    private long representationId; // 🛠 representation ID from Intent
+    private long representationId;// 🛠 representation ID from Intent
+    private Long spectacleId;
+
     private Context context;
     private TextView tvLieu, tvDate;
     private ImageView ivMaps;
@@ -67,6 +69,7 @@ public class BilletActivity extends AppCompatActivity {
 
         // 🛠 Get representationId from previous Intent
         representationId = getIntent().getLongExtra("representation_id", -1);
+        spectacleId = getIntent().getLongExtra("spectacle_id", -1);
         if (representationId == -1) {
             Toast.makeText(this, "Erreur: représentation non trouvée", Toast.LENGTH_SHORT).show();
             finish();
@@ -74,12 +77,60 @@ public class BilletActivity extends AppCompatActivity {
         }
         fetchRepresentationDetails();
 
+        // In BilletActivity, modify the btnContinuer onClickListener:
         btnContinuer.setOnClickListener(v -> {
             if (isUserLoggedIn(this)) {
+                // Create a map of selected billets
+                Map<String, Integer> selectedBillets = new HashMap<>();
+                for (BilletType billet : billetList) {
+                    int qty = selectedQuantities.getOrDefault(billet.getType(), 0);
+                    if (qty > 0) {
+                        selectedBillets.put(billet.getType(), qty);
+                    }
+                }
+
+                if (selectedBillets.isEmpty()) {
+                    Toast.makeText(this, "Veuillez sélectionner au moins un billet", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 Intent intent = new Intent(BilletActivity.this, PaiementActivity.class);
+                intent.putExtra("representation_id", representationId);
+                intent.putExtra("spectacle_id", spectacleId);
+
+                // Pass the selected billets as a Bundle
+                Bundle bundle = new Bundle();
+                for (Map.Entry<String, Integer> entry : selectedBillets.entrySet()) {
+                    bundle.putInt(entry.getKey(), entry.getValue());
+                }
+                intent.putExtra("selected_billets", bundle);
+
+                // Construire résumé billets
+                StringBuilder billetSummary = new StringBuilder();
+                double total = 0;
+                for (Map.Entry<String, Integer> entry : selectedBillets.entrySet()) {
+                    String type = entry.getKey();
+                    int qty = entry.getValue();
+                    double price = 0;
+                    for (BilletType billet : billetList) {
+                        if (billet.getType().equals(type)) {
+                            price = billet.getPrix();
+                            break;
+                        }
+                    }
+                    billetSummary.append(qty).append(" Billets ").append(type).append(", ");
+                    total += qty * price;
+                }
+
+                if (billetSummary.length() > 2) {
+                    billetSummary.setLength(billetSummary.length() - 2); // remove last comma
+                }
+
+                intent.putExtra("billet_summary", billetSummary.toString());
+                intent.putExtra("total_amount", String.format("%.2f", total));
                 startActivity(intent);
             } else {
-                showAuthChoiceDialog(); // show popup if not logged in
+                showAuthChoiceDialog();
             }
         });
 
@@ -298,7 +349,54 @@ public class BilletActivity extends AppCompatActivity {
 
         btnGuest.setOnClickListener(v -> {
             dialog.dismiss();
-            startActivity(new Intent(this, SearchActivity.class));
+            Map<String, Integer> selectedBillets = new HashMap<>();
+            for (BilletType billet : billetList) {
+                int qty = selectedQuantities.getOrDefault(billet.getType(), 0);
+                if (qty > 0) {
+                    selectedBillets.put(billet.getType(), qty);
+                }
+            }
+
+            if (selectedBillets.isEmpty()) {
+                Toast.makeText(this, "Veuillez sélectionner au moins un billet", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Intent intent = new Intent(BilletActivity.this, PaiementActivity.class);
+            intent.putExtra("representation_id", representationId);
+            intent.putExtra("spectacle_id", spectacleId);
+
+            // Pass the selected billets as a Bundle
+            Bundle bundle = new Bundle();
+            for (Map.Entry<String, Integer> entry : selectedBillets.entrySet()) {
+                bundle.putInt(entry.getKey(), entry.getValue());
+            }
+            intent.putExtra("selected_billets", bundle);
+
+            // Construire résumé billets
+            StringBuilder billetSummary = new StringBuilder();
+            double total = 0;
+            for (Map.Entry<String, Integer> entry : selectedBillets.entrySet()) {
+                String type = entry.getKey();
+                int qty = entry.getValue();
+                double price = 0;
+                for (BilletType billet : billetList) {
+                    if (billet.getType().equals(type)) {
+                        price = billet.getPrix();
+                        break;
+                    }
+                }
+                billetSummary.append(qty).append(" Billets ").append(type).append(", ");
+                total += qty * price;
+            }
+
+            if (billetSummary.length() > 2) {
+                billetSummary.setLength(billetSummary.length() - 2); // remove last comma
+            }
+
+            intent.putExtra("billet_summary", billetSummary.toString());
+            intent.putExtra("total_amount", String.format("%.2f", total));
+            startActivity(intent);
         });
 
         dialog.show();

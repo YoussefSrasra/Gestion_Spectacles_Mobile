@@ -6,6 +6,7 @@ import java.util.Set;
 import com.example.mobile.mobile.Reservation.Model.Reservation;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -37,7 +38,17 @@ public class Client {
     private String photo; // base64 image
 
 
-    @OneToMany(mappedBy = "client")
+    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
     private Set<Reservation> reservations;
+
+    @Override
+    public String toString() {
+        return "Client{" +
+               "id=" + id +
+               "full name=" + nom + prenom +
+               ", email='" + email + '\'' +
+               // DON'T include lazy-loaded collections here
+               '}';
+    }
 
 }

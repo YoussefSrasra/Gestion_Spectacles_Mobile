@@ -1,4 +1,4 @@
-package com.example.hafleti.Reservation;
+/*package com.example.hafleti.Reservation;
 
 
 import android.content.Intent;
@@ -46,4 +46,4 @@ public class ReservationsActivity extends AppCompatActivity {
             startActivity(new Intent(this, ProfileActivity.class));
         });
     }
-}
+}*/

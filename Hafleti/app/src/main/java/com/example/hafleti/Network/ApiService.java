@@ -4,6 +4,8 @@ import com.example.hafleti.Models.ClientDTO;
 import com.example.hafleti.Models.LoginRequest;
 import com.example.hafleti.Models.LoginResponse;
 
+import java.util.Map;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -22,5 +24,10 @@ public interface ApiService {
 
     @PUT("/api/clients")
     Call<ClientDTO> updateClient(@Body ClientDTO clientDTO);
+
+    @Headers("Content-Type: application/json")
+    @POST("/api/clients/signup")
+    Call<Map<String, String>> registerClient(@Body ClientDTO clientDTO);
+
 
 }

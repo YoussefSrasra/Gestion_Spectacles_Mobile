@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
 
     <queries>
         <intent>
@@ -31,8 +34,12 @@
         android:theme="@style/AppTheme"
         tools:targetApi="31">
         <activity
-            android:name=".BilletActivity"
+            android:name=".MesReservationsActivity"
             android:exported="false" />
+        <activity
+            android:name=".BilletActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".SeatSelectionActivity"
             android:exported="false" />
@@ -42,18 +49,14 @@
         <activity
             android:name=".RepresentationActivity"
             android:exported="false" />
-        <activity
-            android:name=".Paiement.ConfirmationActivity"
-            android:exported="false" />
+
         <activity
             android:name=".Spectacle.SpectacleDetailsActivity"
             android:theme="@style/AppTheme" /> <!-- Même thème que Home -->
         <activity
             android:name=".Paiement.PaiementActivity"
             android:exported="false" />
-        <activity
-            android:name=".Reservation.ReservationActivity"
-            android:exported="false" />
+
         <activity
             android:name=".Auth.Register.RegisterPage3Activity"
             android:exported="false" />
@@ -76,8 +79,17 @@
         <activity
             android:name=".Home.HomeActivity"
             android:theme="@style/AppTheme" />
-        <activity android:name=".Reservation.ReservationsActivity" />
         <activity android:name=".Profile.ProfileActivity" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>

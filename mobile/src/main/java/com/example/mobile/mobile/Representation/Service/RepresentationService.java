@@ -14,10 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.mobile.mobile.Billet.Model.Billet;
 import com.example.mobile.mobile.Lieu.Model.Lieu;
 import com.example.mobile.mobile.Lieu.Repository.LieuRepository;
+import com.example.mobile.mobile.Representation.DTO.BilletPurchaseRequest;
 import com.example.mobile.mobile.Representation.DTO.RepresentationRequestDTO;
 import com.example.mobile.mobile.Representation.DTO.RepresentationResponseDTO;
 import com.example.mobile.mobile.Representation.Model.Representation;
 import com.example.mobile.mobile.Representation.Repository.RepresentationRepository;
+import com.example.mobile.mobile.Reservation.Service.ReservationService;
 import com.example.mobile.mobile.Spectacle.Model.Spectacle;
 import com.example.mobile.mobile.Spectacle.Repository.SpectacleRepository;
 
@@ -31,6 +33,7 @@ public class RepresentationService {
     private final RepresentationRepository representationRepository;
     private final SpectacleRepository spectacleRepository;
     private final LieuRepository lieuRepository;
+    private final ReservationService reservationService;
 
 
     public List<RepresentationResponseDTO> getAllRepresentations() {
@@ -134,8 +137,8 @@ public class RepresentationService {
         for (int i = 0; i < bronzeCount; i++) {
             billets.add(createBillet(representation, Billet.BilletType.BRONZE, bronzePrice));
         }
-
         representation.getBillets().clear();
+        
         representation.getBillets().addAll(billets);
 
         return representationRepository.save(representation);
@@ -190,7 +193,41 @@ public class RepresentationService {
         return BigDecimal.ZERO;
     }
         
+   @Transactional
+    public void markSelectedBilletsAsSold(BilletPurchaseRequest request) {
+        Long representationId = request.getRepresentationId();
+        Map<String, Integer> billetsToSell = request.getBillets();
 
+        Representation representation = representationRepository.findById(representationId)
+                .orElseThrow(() -> new EntityNotFoundException("Representation not found"));
+
+        for (Map.Entry<String, Integer> entry : billetsToSell.entrySet()) {
+            String type = entry.getKey();
+            int quantity = entry.getValue();
+            int marked = 0;
+
+            for (Billet billet : representation.getBillets()) {
+                if (!billet.isVendu() && billet.getCategorie().toString().equalsIgnoreCase(type)) {
+                    billet.setVendu(true);
+                    marked++;
+                    if (marked >= quantity) break;
+                }
+            }
+
+            if (marked < quantity) {
+                throw new IllegalStateException("Not enough available billets for type: " + type);
+            }
+        }
+
+        representationRepository.save(representation);
+        // if (clientId != null) {
+        //     reservationService.createReservationForClient(clientId, representationId, request);
+        // } else {
+        //     reservationService.createReservationForGuest(email, fullName, representationId, request);
+        // }
+    }
+
+    
 
 
     public void deleteRepresentation(Long id) {

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.mobile.mobile.Representation.DTO.BilletPurchaseRequest;
 import com.example.mobile.mobile.Representation.DTO.RepresentationRequestDTO;
 import com.example.mobile.mobile.Representation.DTO.RepresentationResponseDTO;
 import com.example.mobile.mobile.Representation.Repository.RepresentationRepository;
@@ -61,27 +62,13 @@ public class RepresentationController {
         representationService.deleteRepresentation(id);
     }
 
-    // RepresentationController.java
-    /*@GetMapping("/{id}/available-billets")
-    public ResponseEntity<Map<String, Object>> getAvailableBillets(@PathVariable Long id) {
-        Representation representation = representationReopository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Representation not found with id: " + id));
+    @PostMapping("/mark-billets-as-sold")
+    public ResponseEntity<Void> markBilletsAsSold(@RequestBody BilletPurchaseRequest request) {
+        representationService.markSelectedBilletsAsSold(request);
+        return ResponseEntity.ok().build();
+    }
 
-        Map<String, Object> response = new HashMap<>();
 
-        response.put("totalAvailable", representation.getBillets().stream().filter(b -> !b.isVendu()).count());
-        response.put("goldAvailable", representation.getBillets().stream().filter(b -> !b.isVendu() && b.getCategorie() == Billet.BilletType.GOLD).count());
-        response.put("silverAvailable", representation.getBillets().stream().filter(b -> !b.isVendu() && b.getCategorie() == Billet.BilletType.SILVER).count());
-        response.put("bronzeAvailable", representation.getBillets().stream().filter(b -> !b.isVendu() && b.getCategorie() == Billet.BilletType.BRONZE).count());
-
-        response.put("prices", Map.of(
-            "GOLD", representation.getBillets().stream().filter(b -> b.getCategorie() == Billet.BilletType.GOLD).findFirst().map(Billet::getPrix).orElse(null),
-            "SILVER", representation.getBillets().stream().filter(b -> b.getCategorie() == Billet.BilletType.SILVER).findFirst().map(Billet::getPrix).orElse(null),
-            "BRONZE", representation.getBillets().stream().filter(b -> b.getCategorie() == Billet.BilletType.BRONZE).findFirst().map(Billet::getPrix).orElse(null)
-        ));
-
-        return ResponseEntity.ok(response);
-    }*/
 
     @GetMapping("/{id}/available-billets")
     public ResponseEntity<?> getAvailableBillets(@PathVariable Long id) {

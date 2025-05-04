@@ -1,4 +1,4 @@
-package com.example.hafleti.Reservation;
+/*package com.example.hafleti.Reservation;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -66,4 +66,4 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
             btnAnnuler = itemView.findViewById(R.id.btnAnnuler);
         }
     }
-}
+}*/

@@ -50,6 +50,9 @@ public class ClientService {
         clientRepository.save(client);
     }
     
+    public Optional<Client> findById(Long id) {
+        return clientRepository.findById(id);
+    }
     
 
     
